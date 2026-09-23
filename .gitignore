@@ -1,0 +1,61 @@
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Python virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Python cache and generated files
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyd
+
+# Test, coverage, and type-checker output
+.pytest_cache/
+.mypy_cache/
+.pyright/
+.ruff_cache/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+
+# Packaging and build artifacts
+build/
+dist/
+*.egg-info/
+*.egg
+pip-wheel-metadata/
+
+# Logs and local runtime data
+*.log
+logs/
+data/
+runtime/
+tmp/
+temp/
+
+# Local model and audio artifacts
+models/
+*.gguf
+*.bin
+*.wav
+*.mp3
+*.ogg
+
+# IDE and editor files
+.idea/
+.vscode/
+*.code-workspace
+*.swp
+*.swo
+
+# Operating system files
+.DS_Store
+Thumbs.db
+desktop.ini
