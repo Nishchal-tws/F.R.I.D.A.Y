@@ -1,5 +1,4 @@
 import asyncio
-import json
 
 from app.services.agent import FridayAgent
 
@@ -51,10 +50,6 @@ async def main():
         try:
             answer = await cli.agent.chat(user)
             print("\nFRIDAY >", answer)
-            if cli.agent.tool_events:
-                print("\nTool events:")
-                for event in cli.agent.tool_events:
-                    print(json.dumps(event, indent=2))
         except Exception as exc:
             print("\nFRIDAY ERROR >", exc)
 

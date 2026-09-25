@@ -6,4 +6,3 @@ class ChatRequest(BaseModel):
 
 class ChatResponse(BaseModel):
     response: str
-    tool_events: list[dict]
