@@ -1,4 +1,5 @@
 import json
+import re
 from typing import Callable, Awaitable
 from app.core.config import settings
 from app.llm.client import OllamaClient
@@ -7,7 +8,9 @@ from app.tools.registry import ToolContext, TOOL_DEFINITIONS, TOOL_FUNCTIONS, To
 
 SYSTEM_PROMPT = """You are FRIDAY, a private personal engineering assistant.
 The user is the developer and decision-maker.
-
+If the User is Greeting you, respond with a friendly greeting and Start with Hello Sir .
+use the tools only when necessary, and always ask for approval before performing any action that modifies files or runs shell commands.
+Give the general response to the user query and if the user wants to define any tasks then use the tools 
 Inspect repository context before making repository-specific claims.
 Do not claim a file changed unless a tool actually changed it.
 Prefer small reversible changes.
@@ -17,7 +20,19 @@ Clearly distinguish proposed actions from executed actions and verified results.
 
 ApprovalFn = Callable[[str], Awaitable[bool]]
 
+
+def _is_standalone_greeting(message: str) -> bool:
+    normalized = re.sub(r"[^a-z ]", " ", message.lower())
+    normalized = " ".join(normalized.split())
+    normalized = re.sub(r"\s+friday$", "", normalized)
+    return normalized in {
+        "hello", "hi", "hey", "good morning", "good afternoon", "good evening","Wake up" ,"Daddy's home" , "hey Dude", "hey bro", "hey buddy", "hey pal", "hey friend", "hey mate", "hey champ", "hey chief", "hey boss", "hey captain", "hey partner", "hey dude", "hey man", "hey buddy boy", "hey amigo", "hey compadre", "hey homeboy", "hey homie", "hey broseph", "hey broham", "hey brosephine"
+    }
+
 class FridayAgent:
+    '''@Author: Nischal 
+    @since: 23 Sept 2026
+    '''
     def __init__(self, approval_fn: ApprovalFn | None = None):
         self.llm = OllamaClient(settings.ollama_base_url, settings.ollama_model)
         self.memory = ConversationMemory()
@@ -31,7 +46,14 @@ class FridayAgent:
     async def chat(self, user_message: str, autonomous: bool = False) -> str:
         self.tool_events = []
         self.memory.add("user", user_message)
+
+        if _is_standalone_greeting(user_message):
+            response = "Hello Sir! I’m FRIDAY, ready to help. What would you like to work on?"
+            self.memory.add("assistant", response)
+            return response
+
         messages = [{"role":"system","content":SYSTEM_PROMPT}, *self.memory.as_messages()]
+
 
         for _ in range(settings.max_tool_iterations):
             result = await self.llm.chat(messages, tools=TOOL_DEFINITIONS)
@@ -42,6 +64,7 @@ class FridayAgent:
                 response = assistant.get("content", "").strip()
                 self.memory.add("assistant", response)
                 return response
+
 
             for call in calls:
                 fn = call.get("function", {})
