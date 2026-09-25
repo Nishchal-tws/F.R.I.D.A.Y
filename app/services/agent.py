@@ -78,7 +78,8 @@ class FridayAgent:
                 arguments = fn.get("arguments") or {}
                 if isinstance(arguments, str):
                     try:
-                        arguments = json.loads(arguments)
+                        decoded = json.loads(arguments)
+                        arguments = decoded if isinstance(decoded, dict) else {}
                     except json.JSONDecodeError:
                         arguments = {}
 
