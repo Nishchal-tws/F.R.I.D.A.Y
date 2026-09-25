@@ -48,4 +48,4 @@ async def chat(request: ChatRequest):
     except Exception as exc:
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
-    return ChatResponse(response=answer, tool_events=agent.tool_events)
+    return ChatResponse(response=answer)

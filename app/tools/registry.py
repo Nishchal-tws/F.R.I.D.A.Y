@@ -6,12 +6,21 @@ from pathlib import Path
 
 @dataclass
 class ToolContext:
+    '''
+    @author : Nischal
+    @since: 23 Sept 2026
+    '''
     workspace: Path
     max_file_bytes: int
     shell_timeout_seconds: int
 
 class ToolError(RuntimeError):
-    pass
+     '''
+        @author : Nischal
+        @since: 23 Sept 2026
+    '''
+     def __init__(self,message:str):
+         super().__init__(f"Tool Error: {message}")
 
 def _safe_path(ctx: ToolContext, relative_path: str) -> Path:
     candidate = (ctx.workspace / relative_path).resolve()

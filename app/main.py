@@ -7,3 +7,7 @@ app.include_router(router)
 @app.get("/")
 def root():
     return {"name": "FRIDAY", "version": "0.1.0", "status": "online"}
+
+@app.get("/health")
+def health():
+    return {"status": "healthy"}
