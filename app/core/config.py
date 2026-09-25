@@ -10,6 +10,7 @@ class Settings(BaseSettings):
     max_file_bytes: int = 200_000
     shell_timeout_seconds: int = 120
     max_tool_iterations: int = 10
+    approval_timeout_seconds: int = 120
 
     model_config = SettingsConfigDict(
         env_file=".env",

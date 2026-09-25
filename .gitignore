@@ -32,6 +32,9 @@ dist/
 *.egg
 pip-wheel-metadata/
 
+# Local sandbox workspace FRIDAY is allowed to edit
+friday-sandbox/
+
 # Logs and local runtime data
 *.log
 logs/
