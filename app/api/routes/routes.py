@@ -50,7 +50,7 @@ async def local_status():
 
 
 @router.get("/approvals", response_model=list[PendingApproval])
-def list_approvals():
+async def list_approvals():
     """Tool calls currently waiting on a human decision."""
     return broker.pending()
 
