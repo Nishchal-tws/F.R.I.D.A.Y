@@ -12,10 +12,14 @@ class FRIDAYCLI:
     def __init__(self):
         self.agent = FridayAgent(approval_fn=self.approval_prompt)
 
-    async def approval_prompt(self, action: str) -> bool:
+    async def approval_prompt(self, tool: str, arguments: dict) -> bool:
+        """Ask the operator at the terminal. Anything but an explicit yes is no."""
         print("\n[FRIDAY APPROVAL REQUIRED]")
-        print(action)
-        return input("\nApprove? [y/N]: ").strip().lower() in {"y", "yes"}
+        print(f"Tool: {tool}")
+        print(json.dumps(arguments, indent=2))
+        # input() blocks; keep it off the event loop so the agent stays responsive.
+        answer = await asyncio.to_thread(input, "\nApprove? [y/N]: ")
+        return answer.strip().lower() in {"y", "yes"}
 
 
 async def main():
@@ -39,7 +43,7 @@ async def main():
 
     while True:
         try:
-            user = input("\nYou > ").strip()
+            user = (await asyncio.to_thread(input, "\nYou > ")).strip()
         except (KeyboardInterrupt, EOFError):
             break
 
