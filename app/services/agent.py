@@ -1,5 +1,6 @@
 import json
 from typing import Awaitable, Callable
+import re
 
 from app.core.config import settings
 from app.llm.client import OllamaClient
