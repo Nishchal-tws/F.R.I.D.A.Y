@@ -124,7 +124,7 @@ async def ws_chat(websocket: WebSocket):
             while True:
                 data = await websocket.receive_json()
                 if data.get("type") == "approval_response":
-approved = data.get("approved")
+                    approved = data.get("approved")
                     if isinstance(approved, bool):
                         broker.resolve(str(data.get("id")), approved)
                 else:
