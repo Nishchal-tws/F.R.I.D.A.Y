@@ -47,6 +47,15 @@ Check the local server:
 curl http://127.0.0.1:11434/api/tags
 ```
 
+On Linux or WSL the equivalent setup is:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+pip install -e ".[dev]"
+```
+
 Start FRIDAY:
 
 ```powershell
@@ -60,6 +69,57 @@ python -m app.cli
 ```
 
 The CLI performs a local Ollama health/model check at startup.
+
+## Approval gate
+
+`write_file` and `run_shell` change the machine, so they run only after a human
+approves that specific call. There is no request field, flag, or setting that
+grants blanket autonomy, and an approval request that nobody answers expires as
+a denial after `FRIDAY_APPROVAL_TIMEOUT_SECONDS`.
+
+Every transport resolves the same pending request through one in-process broker.
+
+**CLI** — prompts at the terminal and waits for `y`:
+
+```text
+[FRIDAY APPROVAL REQUIRED]
+Tool: run_shell
+{
+  "command": "pytest -q"
+}
+
+Approve? [y/N]:
+```
+
+**WebSocket** (`/api/ws/chat`) — approval is requested and answered in-band, and
+one agent lives for the connection so memory persists across turns:
+
+```text
+client -> {"message": "run the tests"}
+server -> {"type": "approval_request", "id": "a1b2", "tool": "run_shell", "arguments": {...}}
+client -> {"type": "approval_response", "id": "a1b2", "approved": true}
+server -> {"type": "final", "response": "...", "tool_events": [...]}
+```
+
+**REST polling** — `POST /api/chat` holds the connection while a call waits.
+Answer it from a second terminal:
+
+```bash
+curl -s localhost:8000/api/approvals
+curl -s -X POST localhost:8000/api/approvals/a1b2 -d '{"approved": true}' -H 'content-type: application/json'
+```
+
+`POST /api/chat` is one-shot: it builds a fresh agent per request, so it keeps
+no conversation memory. Use the WebSocket endpoint for a continuing session.
+
+## Tests
+
+```bash
+pytest -q
+```
+
+The suite stubs the LLM, so it needs no Ollama server and no model. CI runs it
+on Python 3.11 and 3.12 (`.github/workflows/ci.yml`).
 
 ## Architecture
 

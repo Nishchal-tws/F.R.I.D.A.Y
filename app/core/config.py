@@ -5,11 +5,12 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     app_name: str = "FRIDAY"
     workspace: Path
-    ollama_base_url: str 
-    ollama_model: str 
-    max_file_bytes: int 
-    shell_timeout_seconds: int 
-    max_tool_iterations: int 
+    ollama_base_url: str = "http://127.0.0.1:11434"
+    ollama_model: str = "qwen3-coder:30b"
+    max_file_bytes: int = 200_000
+    shell_timeout_seconds: int = 120
+    max_tool_iterations: int = 10
+    approval_timeout_seconds: int = 120
 
     model_config = SettingsConfigDict(
         env_file=".env",

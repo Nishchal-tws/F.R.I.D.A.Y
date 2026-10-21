@@ -50,3 +50,49 @@ ollama run devstral:24b
 ```
 
 Which model is practical depends on your RAM/VRAM. We should select the model after checking your PC hardware rather than guessing.
+
+## Sizing the model to the machine
+
+Both models above assume a workstation. Check the hardware first:
+
+```bash
+free -h                 # usable RAM
+nvidia-smi              # VRAM, if there is a GPU
+```
+
+A model needs roughly its download size in free memory, plus 1-2 GB for the
+context window. Without a GPU, Ollama runs on the CPU, and throughput drops to
+single-digit tokens per second — usable for short turns, painful for long ones.
+
+| Free memory | Candidate | Approx. size | Notes |
+| --- | --- | --- | --- |
+| 20 GB+ or 24 GB VRAM | `qwen3-coder:30b` | ~19 GB | The README's default |
+| 16 GB+ | `devstral:24b` | ~14 GB | Coding-agent oriented |
+| 8-12 GB | `qwen2.5-coder:7b` | ~4.7 GB | Reliable tool calling |
+| 4-6 GB | `qwen2.5-coder:3b` | ~1.9 GB | Weaker planning, still calls tools |
+
+Sizes are approximate; confirm with `ollama list` after pulling.
+
+FRIDAY's agent loop depends on tool calling, so any candidate must be a
+tool-capable model. A model without tool support will answer in prose and never
+invoke `read_file` or `run_shell`, which looks like FRIDAY ignoring the repo.
+
+### Under WSL
+
+WSL2 gets about half the host's RAM by default, so `free -h` inside WSL is the
+number that matters. Raise it in `C:\Users\<you>\.wslconfig` and run
+`wsl --shutdown`:
+
+```ini
+[wsl2]
+memory=12GB
+```
+
+Ollama installed on the Windows host is not reachable at `127.0.0.1` from WSL
+unless mirrored networking is on, and FRIDAY rejects non-loopback endpoints by
+design. Either install Ollama inside WSL, or enable mirrored networking:
+
+```ini
+[wsl2]
+networkingMode=mirrored
+```
