@@ -1,6 +1,42 @@
 import asyncio
+import json
 
 from app.services.agent import FridayAgent
+
+RED = "\033[31m"
+RESET = "\033[0m"
+
+BANNER = "\n".join((
+    '=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=',
+    '',
+    '',
+    '.           ..         .           .       .           .           .',
+    '      .         .            .          .       .',
+    '            .         ..xxxxxxxxxx....               .       .             .',
+    '    .             MWMWMWWMWMWMWMWMWMWMWMWMW                       .',
+    '              IIIIMWMWMWMWMWMWMWMWMWMWMWMWMWMttii:        .           .',
+    ' .      IIYVVXMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWxx...         .           .',
+    '     IWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMx..',
+    '   IIWMWMWMWMWMWMWMWMWBY%ZACH%AND%OWENMWMWMWMWMWMWMWMWMWMWMWMWMx..        .',
+    '    ""MWMWMWMWMWM"""""""".  .:..   ."""""MWMWMWMWMWMWMWMWMWMWMWMWMWti.',
+    ' .     ""   . `  .: . :. : .  . :.  .  . . .  """"MWMWMWMWMWMWMWMWMWMWMWMWMti=',
+    '        . .   :` . :   .  .\'.\' \'....xxxxx...,\'. \'   \' ."""YWMWMWMWMWMWMWMWMWMW+',
+    '     ; . ` .  . : . .\' :  . ..XXXXXXXXXXXXXXXXXXXXx.    `     . "YWMWMWMWMWMWMW',
+    '.    .  .  .    . .   .  ..XXXXXXXXWWWWWWWWWWWWWWWWXXXX.  .     .     """""""',
+    '        \' :  : . : .  ...XXXXXWWW"   W88N88@888888WWWWWXX.   .   .       . .',
+    '   . \' .    . :   ...XXXXXXWWW"    M88N88GGGGGG888^8M "WMBX.          .   ..  :',
+    '         :     ..XXXXXXXXWWW"     M88888WWRWWWMW8oo88M   WWMX.     .    :    .',
+    '           "XXXXXXXXXXXXWW"       WN8888WWWWW  W8@@@8M    BMBRX.         .  : :',
+    '  .       XXXXXXXX=MMWW":  .      W8N888WWWWWWWW88888W      XRBRXX.  .       .',
+    '     ....  ""XXXXXMM::::. .        W8@889WWWWWM8@8N8W      . . :RRXx.    .',
+    '         ``...\'\'\'  MMM::.:.  .      W888N89999888@8W      . . ::::"RXV    .  :',
+    " .       ..'''''      MMMm::.  .      WW888N88888WW     .  . mmMMMMMRXx",
+    '      ..\' .            ""MMmm .  .       WWWWWWW   . :. :,miMM"""  : ""`    .',
+    '   .                .       ""MMMMmm . .  .  .   ._,mMMMM"""  :  \' .  :',
+    '               .                  ""MMMMMMMMMMMMM""" .  : . \'   .        .',
+    '          .              .     .    .                      .         .',
+    '.                                         .          .         .',
+))
 
 
 class FRIDAYCLI:
@@ -17,12 +53,13 @@ class FRIDAYCLI:
         print(f"Tool: {tool}")
         print(json.dumps(arguments, indent=2))
         # input() blocks; keep it off the event loop so the agent stays responsive.
-        answer = await asyncio.to_thread(input, "\nApprove? [y/N]: ")
-        return answer.strip().lower() in {"y", "yes"}
+        answer = await asyncio.to_thread(input, "\nApprove? press 1 for yes\n 0 for no: ")
+        return answer.strip().lower() in {"1"}
 
 
 async def main():
     cli = FRIDAYCLI()
+    print(f"{RED}{BANNER}{RESET}")
     print("FRIDAY v0.1 online and ready to assist you")
     print("LLM:", cli.agent.llm.model)
     print("Ollama:", cli.agent.llm.base_url)
