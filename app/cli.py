@@ -4,6 +4,7 @@ import json
 from app.services.agent import FridayAgent
 
 RED = "\033[31m"
+BOLD = "\033[1m"
 RESET = "\033[0m"
 
 BANNER = "\n".join((
@@ -38,6 +39,17 @@ BANNER = "\n".join((
     '.                                         .          .         .',
 ))
 
+TITLE = "\n".join((
+    '',
+    '          ███████╗   ██████╗    ██╗   ██████╗     █████╗    ██╗   ██╗',
+    '          ██╔════╝   ██╔══██╗   ██║   ██╔══██╗   ██╔══██╗   ╚██╗ ██╔╝',
+    '          █████╗     ██████╔╝   ██║   ██║  ██║   ███████║    ╚████╔╝',
+    '          ██╔══╝     ██╔══██╗   ██║   ██║  ██║   ██╔══██║     ╚██╔╝',
+    '          ██║     ██╗██║  ██║██╗██║██╗██████╔╝██╗██║  ██║██╗   ██║',
+    '          ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝╚═╝╚═╝╚═════╝ ╚═╝╚═╝  ╚═╝╚═╝   ╚═╝',
+    '',
+))
+
 
 class FRIDAYCLI:
     ''' A class for CLI interaction with the friday agent
@@ -54,12 +66,13 @@ class FRIDAYCLI:
         print(json.dumps(arguments, indent=2))
         # input() blocks; keep it off the event loop so the agent stays responsive.
         answer = await asyncio.to_thread(input, "\nApprove? press 1 for yes\n 0 for no: ")
-        return answer.strip().lower() in {"1"}
+        return answer.strip().lower() in {"1", "0"}
 
 
 async def main():
     cli = FRIDAYCLI()
     print(f"{RED}{BANNER}{RESET}")
+    print(f"{BOLD}{RED}{TITLE}{RESET}")
     print("FRIDAY v0.1 online and ready to assist you")
     print("LLM:", cli.agent.llm.model)
     print("Ollama:", cli.agent.llm.base_url)
