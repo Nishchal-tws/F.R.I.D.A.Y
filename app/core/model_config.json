@@ -1,0 +1,20 @@
+{
+    "app_name": "FRIDAY",
+    "workspace": "./workspace",
+    "ollama_base_url": "http://127.0.0.1:11434",
+    "ollama_model": "qwen2.5:7b-instruct",
+    "max_file_bytes": 200000,
+    "shell_timeout_seconds": 120,
+    "max_tool_iterations": 10,
+    "approval_timeout_seconds": 120,
+    "temperature": 0.7,
+    "num_ctx": 2048,
+    "top_p": 0.9,
+    "top_k": 40,
+    "min_p": 0.0,
+    "num_predict": -1,
+    "repeat_penalty": 1.1,
+    "repeat_last_n": 64,
+    "stop": [],
+    "seed": 0
+}

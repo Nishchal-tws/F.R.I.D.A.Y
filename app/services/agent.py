@@ -4,7 +4,7 @@ import re
 
 from app.core.config import settings
 from app.llm.client import OllamaClient
-from app.memory.manager import ConversationMemory
+from app.llm.memory.manager import ConversationMemory
 from app.tools.registry import TOOL_DEFINITIONS, TOOL_FUNCTIONS, ToolContext, ToolError
 
 SYSTEM_PROMPT = """You are FRIDAY, a private personal engineering assistant.

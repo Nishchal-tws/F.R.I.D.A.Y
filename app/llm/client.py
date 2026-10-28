@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import httpx
 
-from app.core.config import settings, validate_local_only_configuration
+from app.core.config import validate_local_only_configuration
 
 
 class OllamaClient:
